@@ -23,7 +23,7 @@ function getTimeRemaining(endTime){
 client.on('ready', ()=>{
     console.log(`Zalogowano jako ${client.user.tag}`);
     const channel = client.channels.cache.get(process.env.POE_CHANNEL_ID);
-    const startMsg = channel.send("xxx");
+    const startMsg = channel.send("placeholder");
 
     const timeInterval = setInterval(()=>{
         const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
