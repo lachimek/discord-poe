@@ -20,14 +20,18 @@ function getTimeRemaining(endTime){
     };
 }
 
-const timeInterval = setInterval(()=>{
-    const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
-    client.channels.cache.get(process.env.POE_CHANNEL_ID).send(`Do startu ligi **Expedition** zostało: ${days}D ${hours}H ${minutes}M`);
-    if(total <= 0) clearInterval(timeInterval);
-}, process.env.MSG_TIMEOUT || 2000);
-
 client.on('ready', ()=>{
     console.log(`Zalogowano jako ${client.user.tag}`);
+    const channel = client.channels.cache.get(process.env.POE_CHANNEL_ID);
+    const startMsg = channel.send("xxx");
+
+    const timeInterval = setInterval(()=>{
+        const {total, days, hours, minutes, seconds} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
+        startMsg.then(msg =>{
+            msg.edit(`Do startu ligi **Expedition** zostało: ${days}D ${hours}H ${minutes}M ${seconds}S`);
+        });
+        if(total <= 0) clearInterval(timeInterval);
+    }, process.env.MSG_TIMEOUT || 2000);
 })
 
 client.login(process.env.BOT_TOKEN);
