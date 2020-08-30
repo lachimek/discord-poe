@@ -28,7 +28,7 @@ client.on('ready', ()=>{
     const timeInterval = setInterval(()=>{
         const {total, days, hours, minutes, seconds} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
         startMsg.then(msg =>{
-            msg.edit(`Do startu ligi **Expedition** zostało: ${days}D ${hours}H ${minutes}M ${seconds}S`);
+            msg.edit(`Do startu ligi **Expedition** zostało: ${days}D ${hours}H ${minutes}M`);
         });
         if(total <= 0) clearInterval(timeInterval);
     }, process.env.MSG_TIMEOUT || 2000);
