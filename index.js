@@ -21,10 +21,10 @@ function getTimeRemaining(endTime){
 }
 
 const timeInterval = setInterval(()=>{
-    const {total, days, hours, minutes} = getTimeRemaining(deadline);
+    const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
     client.channels.cache.get(process.env.POE_CHANNEL_ID).send(`Do startu ligi **Expedition** zostało: ${days}D ${hours}H ${minutes}M`);
     if(total <= 0) clearInterval(timeInterval);
-}, 5000);
+}, process.env.MSG_TIMEOUT || 2000);
 
 client.on('ready', ()=>{
     console.log(`Zalogowano jako ${client.user.tag}`);
