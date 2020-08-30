@@ -26,7 +26,7 @@ client.on('ready', ()=>{
     const startMsg = channel.send("xxx");
 
     const timeInterval = setInterval(()=>{
-        const {total, days, hours, minutes, seconds} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
+        const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
         startMsg.then(msg =>{
             msg.edit(`Do startu ligi **Expedition** zostało: ${days}D ${hours}H ${minutes}M`);
         });
