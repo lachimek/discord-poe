@@ -27,17 +27,16 @@ function getTimeRemaining(endTime){
 
 client.on('ready', ()=>{
     console.log(`Zalogowano jako ${client.user.tag}`);
-    const targets = {
-        days: client.channels.cache.get(sources.days),
-        hours: client.channels.cache.get(sources.hours),
-        minutes: client.channels.cache.get(sources.minutes),
-    };
+
     const timeInterval = setInterval(()=>{
         const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
 
-        targets.days.setName(`${days} - ${days < 2 && days !== 0 ? 'dzień' : 'dni'}`);
-        targets.hours.setName(`${hours} - ${hours < 2 && hours !== 0 ? 'godzina' : 'godzin'}`);
-        targets.minutes.setName(`${minutes} - ${minutes < 2 && minutes !== 0 ? 'minuta' : 'minut'}`);
+        client.channels.cache.get(sources.days).setName(`${days} - ${days < 2 && days !== 0 ? 'dzień' : 'dni'}`)
+            .catch(console.error);
+        client.channels.cache.get(sources.hours).setName(`${hours} - ${hours < 2 && hours !== 0 ? 'godzina' : 'godzin'}`)
+            .catch(console.error);
+        client.channels.cache.get(sources.minutes).setName(`${minutes} - ${minutes < 2 && minutes !== 0 ? 'minuta' : 'minut'}`)
+            .catch(console.error);
 
         if(total <= 0) clearInterval(timeInterval);
     }, process.env.MSG_TIMEOUT || 2000);
