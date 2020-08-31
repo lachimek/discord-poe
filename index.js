@@ -31,9 +31,9 @@ client.on('ready', ()=>{
     const timeInterval = setInterval(()=>{
         const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
 
-        const msg = `${days}d * ${hours}h * ${minutes}m`
+        const msg = `${days}d : ${hours}h : ${minutes}m`
 
-        client.channels.cache.get(sources.days).setName(msg)
+        client.channels.cache.get("750081896427421778").setName(msg)
             .catch(console.error);
 
         if(total <= 0) clearInterval(timeInterval);
