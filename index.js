@@ -3,11 +3,6 @@ const Discord = require('discord.js')
 const client = new Discord.Client();
 
 const deadline = 'September 18 2020 22:00:00 GMT+0200';
-const sources = {
-    days: "750058655507939350",
-    hours: "750058667822285022",
-    minutes: "750058677775368240"
-};
 
 function getTimeRemaining(endTime){
     const total = Date.parse(endTime) - Date.parse(new Date());
