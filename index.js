@@ -31,16 +31,18 @@ client.on('ready', ()=>{
     const timeInterval = setInterval(()=>{
         const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
 
-        client.channels.cache.get(sources.days).setName(`${days} - ${days < 2 && days !== 0 ? 'dzień' : 'dni'}`)
-            .catch(console.error);
-        client.channels.cache.get(sources.hours).setName(`${hours} - ${hours < 2 && hours !== 0 ? 'godzina' : 'godzin'}`)
-            .catch(console.error);
-        client.channels.cache.get(sources.minutes).setName(`${minutes} - ${minutes < 2 && minutes !== 0 ? 'minuta' : 'minut'}`)
+        const msg = `${days}d * ${hours}h * ${minutes}m`
+
+        client.channels.cache.get(sources.days).setName(msg)
             .catch(console.error);
 
         if(total <= 0) clearInterval(timeInterval);
-    }, process.env.MSG_TIMEOUT || 2000);
+    }, process.env.MSG_TIMEOUT || 60000);
 
+})
+
+client.on('rateLimit', (info) => {
+    console.log(`Rate limit hit ${info.timeDifference ? info.timeDifference : info.timeout ? info.timeout: 'Unknown timeout '}`)
 })
 
 client.login(process.env.BOT_TOKEN);
