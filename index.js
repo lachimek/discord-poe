@@ -30,7 +30,7 @@ const lab = {
     merc: `${absolutePath}div[2]/div/h2/a`,
     cruel: `${absolutePath}div[3]/div/h2/a`,
     normal: `${absolutePath}div[4]/div/h2/a`,
-    img: `/html/body/div[1]/div[2]/div/div/article/div[3]/div[2]/span/img`,
+    img: `/html/body/div[1]/div[2]/div/div/article/div[3]/div[2]/img`,
 }
 
 const labOptions = ['uber', 'merc', 'cruel', 'normal'];
