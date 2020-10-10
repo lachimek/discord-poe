@@ -1,5 +1,6 @@
 require('dotenv').config();
 const request = require('request-promise')
+const axios = require('axios')
 const xpath = require('xpath')
 const dom = require('xmldom').DOMParser
 const Discord = require('discord.js')
@@ -22,7 +23,7 @@ function getTimeRemaining(endTime){
         seconds
     };
 }
-
+const covidApi = `https://api.apify.com/v2/actor-tasks/9DWQprhKovw6JndVB/runs/last/dataset/items?token=${process.env.API_KEY}`
 const poeLabUrl = 'https://www.poelab.com/';
 const absolutePath = '/html/body/div[1]/div[2]/div[1]/div[3]/div/div/center/div/';
 const lab = {
@@ -33,11 +34,9 @@ const lab = {
     img: `/html/body/div[1]/div[2]/div/div/article/div[3]/div[2]/img`,
 }
 
-const labOptions = ['uber', 'merc', 'cruel', 'normal'];
-
 client.on('ready', ()=>{
     console.log(`Zalogowano jako ${client.user.tag}`);
-    client.user.setPresence({activity: {name: 'Prefix komend: &'}}).then(r => console.log("ustawiono status"))
+    client.user.setPresence({activity: {name: '&info'}}).then(r => console.log("ustawiono status"))
 
      const timeInterval = setInterval(()=>{
         const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
@@ -90,8 +89,42 @@ client.on('message', (message)=>{
                 }).catch(err => console.log(err));
             });
         }
-    }else {
-        message.channel.send(`Dostępne komendy: &lab`);
+    }else if(command[0].toLowerCase().substr(1) === 'covid'){
+        axios.get(covidApi).then(data =>{
+            const tweets=data.data[0]['tweets'];
+            let filtered = tweets.filter(tweet => tweet.contentText.includes("Mamy"))
+            let discordEmbed = {
+                "embed": {
+                    "title": "Covid - Polska",
+                    "color": 13053094,
+                    "footer": {
+                        "icon_url": "https://cdn.discordapp.com/emojis/432884822591930379.png",
+                        "text": "Nowe dane codziennie o 11:00"
+                    },
+                    "thumbnail": {
+                        "url": "https://image.flaticon.com/icons/png/512/2760/2760147.png"
+                    },
+                    "fields": [
+                        {
+                            "name": "no data error",
+                            "value": "Top 5 województw"
+                        }
+                    ]
+                }
+            }
+            discordEmbed.embed.fields[0].name = filtered[0].contentText.split(":")[0];
+            let topka = filtered[0].contentText.split(":")[1].split(", ");
+            for(let i = 0; i<5; i++){
+                let item = topka[i].replace('go', '');
+                discordEmbed.embed.fields.push({
+                    "name": "\u200b",
+                    "value": `${i+1}. ${i===0 ? item.substring(1) : item}`
+                })
+            }
+            message.channel.send(discordEmbed);
+        })
+    }else if(command[0].toLowerCase().substr(1) === 'info') {
+        message.channel.send(`Dostępne komendy: &lab (zepsute), &covid`);
     }
 })
 

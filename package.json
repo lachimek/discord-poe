@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "axios": "^0.20.0",
     "nodemon": "^2.0.4",
     "request-promise": "^4.2.6",
     "xpath": "0.0.29"
