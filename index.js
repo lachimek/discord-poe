@@ -23,7 +23,7 @@ function getTimeRemaining(endTime){
         seconds
     };
 }
-const covidApi = `https://api.apify.com/v2/actor-tasks/9DWQprhKovw6JndVB/runs/last/dataset/items?token=${process.env.API_KEY}`
+const covidApi = `https://api.apify.com/v2/actor-tasks/9DWQprhKovw6JndVB/run-sync-get-dataset-items?token=${process.env.API_KEY}`
 const poeLabUrl = 'https://www.poelab.com/';
 const absolutePath = '/html/body/div[1]/div[2]/div[1]/div[3]/div/div/center/div/';
 const lab = {
@@ -122,7 +122,7 @@ client.on('message', (message)=>{
                 })
             }
             message.channel.send(discordEmbed);
-        })
+        });
     }else if(command[0].toLowerCase().substr(1) === 'info') {
         message.channel.send(`Dostępne komendy: &lab (zepsute), &covid`);
     }
