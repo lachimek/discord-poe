@@ -23,7 +23,7 @@ function getTimeRemaining(endTime){
         seconds
     };
 }
-const covidApi = `https://api.apify.com/v2/actor-tasks/9DWQprhKovw6JndVB/run-sync-get-dataset-items?token=${process.env.API_KEY}`
+const covidApi = `https://api.apify.com/v2/actor-tasks/9DWQprhKovw6JndVB/runs/last/dataset/items?token=${process.env.API_KEY}`
 const poeLabUrl = 'https://www.poelab.com/';
 const absolutePath = '/html/body/div[1]/div[2]/div[1]/div[3]/div/div/center/div/';
 const lab = {
@@ -91,8 +91,10 @@ client.on('message', (message)=>{
         }
     }else if(command[0].toLowerCase().substr(1) === 'covid'){
         axios.get(covidApi).then(data =>{
+            const today = new Date().getDate();
             const tweets=data.data[0]['tweets'];
-            let filtered = tweets.filter(tweet => tweet.contentText.includes("Mamy"))
+            let filtered = tweets.filter(tweet => tweet.contentText.includes("Mamy") && tweet.dateTime.split(" ")[2] === today.toString());
+            console.log(filtered);
             let discordEmbed = {
                 "embed": {
                     "title": "Covid - Polska",
@@ -122,7 +124,7 @@ client.on('message', (message)=>{
                 })
             }
             message.channel.send(discordEmbed);
-        });
+        }).catch(err => console.error(err));
     }else if(command[0].toLowerCase().substr(1) === 'info') {
         message.channel.send(`Dostępne komendy: &lab (zepsute), &covid`);
     }
