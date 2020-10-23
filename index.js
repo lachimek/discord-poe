@@ -34,21 +34,31 @@ const lab = {
     img: `/html/body/div[1]/div[2]/div/div/article/div[3]/div[2]/img`,
 }
 
+const chaosPrice = () => {
+    let date_ob = new Date();
+    axios.get("https://poe.ninja/api/data/currencyoverview?league=Heist&type=Currency").then(response =>{
+        const exaltInChaos = response.data.lines.filter(line => line.detailsId === 'exalted-orb')[0].chaosEquivalent;
+        const msg = `1ex = ${exaltInChaos}c [${date_ob.getHours()}:${date_ob.getMinutes()}]`;
+        client.channels.cache.get("750081896427421778").setName(msg)
+            .catch(console.error);
+    });
+}
+
 client.on('ready', ()=>{
     console.log(`Zalogowano jako ${client.user.tag}`);
     client.user.setPresence({activity: {name: '&info'}}).then(r => console.log("ustawiono status"))
-
-     const timeInterval = setInterval(()=>{
-        const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
-
-        const msg = `${days}d : ${hours}h : ${minutes}m`
-
-        client.channels.cache.get("750081896427421778").setName(msg)
-            .catch(console.error);
-
-        if(total <= 0) clearInterval(timeInterval);
+    chaosPrice();
+    setInterval(()=>{
+        chaosPrice();
+        // const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
+        //
+        // const msg = `${days}d : ${hours}h : ${minutes}m`
+        //
+        // client.channels.cache.get("750081896427421778").setName(msg)
+        //     .catch(console.error);
+        //
+        // if(total <= 0) clearInterval(timeInterval);
     }, process.env.MSG_TIMEOUT || 60000);
-
 })
 
 client.on('message', (message)=>{
