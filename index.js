@@ -99,7 +99,7 @@ client.on('message', (message)=>{
                 "useQueryString": true
             },
             params: {
-                country: command[1] ? command[1] : "Poland"
+                country: command[1] || "Poland"
             }
         }).then(res=>{
             if(!res.data.response[0]) return ;
@@ -115,6 +115,7 @@ client.on('message', (message)=>{
                 },
                 day
             } = res.data.response[0];
+            const deathRate = parseFloat(totalDeaths/totalCases*100).toFixed(2);
             let discordEmbed = {
                 "embed": {
                     "title": `Covid - ${country}`,
@@ -134,6 +135,10 @@ client.on('message', (message)=>{
                         {
                             "name": "\u200b",
                             "value": `Zmarło: ${totalDeaths} **${newDeaths}**`
+                        },
+                        {
+                            "name": "\u200b",
+                            "value": `Śmiertelność: ${deathRate}%`
                         }
                     ]
                 }
