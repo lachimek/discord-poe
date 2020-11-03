@@ -50,14 +50,6 @@ client.on('ready', ()=>{
     chaosPrice();
     setInterval(()=>{
         chaosPrice();
-        // const {total, days, hours, minutes} = getTimeRemaining(process.env.DEADLINE_DATE || deadline);
-        //
-        // const msg = `${days}d : ${hours}h : ${minutes}m`
-        //
-        // client.channels.cache.get("750081896427421778").setName(msg)
-        //     .catch(console.error);
-        //
-        // if(total <= 0) clearInterval(timeInterval);
     }, process.env.MSG_TIMEOUT || 60000);
 })
 
@@ -100,43 +92,56 @@ client.on('message', (message)=>{
             });
         }
     }else if(command[0].toLowerCase().substr(1) === 'covid'){
-        axios.get(covidApi).then(data =>{
-            const today = new Date().getDate();
-            const tweets=data.data[0]['tweets'];
-            let filtered = tweets.filter(tweet => tweet.contentText.includes("Mamy") && tweet.dateTime.split(" ")[2] === today.toString());
-            console.log(filtered);
+        axios.get("https://rapidapi.p.rapidapi.com/statistics", {
+            headers: {
+                "x-rapidapi-key": process.env.RAPID_API,
+                "x-rapidapi-host": "covid-193.p.rapidapi.com'",
+                "useQueryString": true
+            },
+            params: {
+                country: command[1] ? command[1] : "Poland"
+            }
+        }).then(res=>{
+            if(!res.data.response[0]) return ;
+            const {
+                country,
+                cases: {
+                    new: newCases,
+                    total: totalCases,
+                },
+                deaths: {
+                    new: newDeaths,
+                    total: totalDeaths
+                },
+                day
+            } = res.data.response[0];
             let discordEmbed = {
                 "embed": {
-                    "title": "Covid - Polska",
+                    "title": `Covid - ${country}`,
                     "color": 13053094,
                     "footer": {
                         "icon_url": "https://cdn.discordapp.com/emojis/432884822591930379.png",
-                        "text": "Nowe dane codziennie o 11:00"
+                        "text": `Dane z: ${day}`
                     },
                     "thumbnail": {
                         "url": "https://image.flaticon.com/icons/png/512/2760/2760147.png"
                     },
                     "fields": [
                         {
-                            "name": "no data error",
-                            "value": "Top 5 województw"
+                            "name": "\u200b",
+                            "value": `Przypadki: ${totalCases} **${newCases}**`
+                        },
+                        {
+                            "name": "\u200b",
+                            "value": `Zmarło: ${totalDeaths} **${newDeaths}**`
                         }
                     ]
                 }
             }
-            discordEmbed.embed.fields[0].name = filtered[0].contentText.split(":")[0];
-            let topka = filtered[0].contentText.split(":")[1].split(", ");
-            for(let i = 0; i<5; i++){
-                let item = topka[i].replace('go', '');
-                discordEmbed.embed.fields.push({
-                    "name": "\u200b",
-                    "value": `${i+1}. ${i===0 ? item.substring(1) : item}`
-                })
-            }
             message.channel.send(discordEmbed);
         }).catch(err => console.error(err));
     }else if(command[0].toLowerCase().substr(1) === 'info') {
-        message.channel.send(`Dostępne komendy: &lab (zepsute), &covid`);
+        message.channel.send("Dostępne komendy: &lab, &covid [kraj(eng)]");
     }
 })
 
