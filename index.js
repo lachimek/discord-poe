@@ -36,7 +36,7 @@ const lab = {
 
 const chaosPrice = () => {
     let date_ob = new Date();
-    axios.get("https://poe.ninja/api/data/currencyoverview?league=Heist&type=Currency").then(response =>{
+    axios.get("https://poe.ninja/api/data/currencyoverview?league=Ritual&type=Currency").then(response =>{
         const exaltInChaos = response.data.lines.filter(line => line.detailsId === 'exalted-orb')[0].chaosEquivalent;
         const msg = `1ex = ${exaltInChaos}c [${date_ob.getHours()}:${date_ob.getMinutes()}]`;
         client.channels.cache.get("750081896427421778").setName(msg)
